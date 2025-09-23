@@ -29,18 +29,6 @@ const HeroSection = () => {
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Status badges */}
-          <div className="flex justify-center gap-4 mb-8">
-            <div className="flex items-center gap-2 bg-card/50 backdrop-blur-sm rounded-full px-4 py-2 border border-border">
-              <Trophy className="w-4 h-4 text-secondary" />
-              <span className="text-sm font-medium">Competitive Gaming</span>
-            </div>
-            <div className="flex items-center gap-2 bg-card/50 backdrop-blur-sm rounded-full px-4 py-2 border border-border">
-              <Users className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">Social Arena</span>
-            </div>
-          </div>
-
           {/* Main headline */}
           <h1 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-foreground via-primary-glow to-secondary bg-clip-text text-transparent leading-tight">
             Ready to Win at
@@ -49,14 +37,10 @@ const HeroSection = () => {
           </h1>
 
           {/* Subheadline */}
-          <p className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
             Lockd isn't just another habit app—it's your{" "}
             <span className="text-primary font-semibold">social arena</span> for healthy competition, 
             real accountability, and next-level self-improvement.
-          </p>
-
-          <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-            Challenge friends, spark rivalries, and climb the ranks—all while building habits that actually stick.
           </p>
 
           {/* CTA Section */}
