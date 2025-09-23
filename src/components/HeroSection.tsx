@@ -3,23 +3,79 @@ import { Input } from "@/components/ui/input";
 import { Trophy, Users, Target, Zap } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
+import logo from "@/assets/lockd_logo_transparent.png";
 
 const HeroSection = () => {
   const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleWaitlistSignup = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
+  const submitEmail = async (email: string) => {
+    // Validate email before submission
+    if (!email || email.trim() === '') {
+      console.error('Email is required and cannot be empty');
+      return;
+    }
+    
+    try {
+      const { data, error } = await supabase
+        .from('waitlist_emails')
+        .insert({ email: email.trim().toLowerCase() });
+      
+      if (error) {
+        // Handle duplicate email error
+        if (error.code === '23505') {
+          toast({
+            title: "Already on the list! 🎯",
+            description: "You're already signed up for early access.",
+            variant: "default",
+          });
+          return;
+        }
+        throw error;
+      }
+      
+      console.log('Email submitted successfully');
       toast({
         title: "Welcome to the founding squad! 🏆",
         description: "You're now on the waitlist for day-one access.",
       });
       setEmail("");
+    } catch (error) {
+      console.error('Error submitting email:', error);
+      toast({
+        title: "Something went wrong",
+        description: "Please try again or contact support if the issue persists.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleWaitlistSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      await submitEmail(email);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <section className="relative min-h-screen bg-gradient-hero flex items-center justify-center overflow-hidden">
+      {/* Logo */}
+      <div className="absolute top-1 left-8  z-15">
+        <img 
+          src={logo} 
+          alt="Lockd Logo" 
+          className="h-32 w-auto"
+        />
+      </div>
+
       {/* Animated background elements */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-primary rounded-full blur-3xl animate-float"></div>
@@ -31,68 +87,52 @@ const HeroSection = () => {
         <div className="text-center max-w-4xl mx-auto">
           {/* Main headline */}
           <h1 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-foreground via-primary-glow to-secondary bg-clip-text text-transparent leading-tight">
-            Ready to Win at
+            Realize your Potential
             <br />
-            <span className="bg-gradient-primary bg-clip-text text-transparent">Real Life?</span>
+            <span className="bg-gradient-primary bg-clip-text text-transparent"></span>
           </h1>
 
           {/* Subheadline */}
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
-            Lockd isn't just another habit app—it's your{" "}
-            <span className="text-primary font-semibold">social arena</span> for healthy competition, 
-            real accountability, and next-level self-improvement.
+            The{" "}
+            <span className="text-primary font-semibold">#1</span> app to help you actually lock in.
           </p>
 
           {/* CTA Section */}
-          <div className="bg-card/30 backdrop-blur-sm rounded-2xl p-8 border border-border/50 max-w-2xl mx-auto mb-16">
+         <div className="bg-card/30 backdrop-blur-sm rounded-2xl p-8 border border-border/50 max-w-2xl mx-auto mb-16">
             <div className="flex items-center justify-center gap-2 mb-4">
               <Zap className="w-5 h-5 text-secondary animate-pulse-glow" />
               <h3 className="text-2xl font-bold">Be the first to experience Lockd.</h3>
             </div>
             
-            <p className="text-muted-foreground mb-6">
-              Jump on the waitlist for day-one access and exclusive rewards as part of the founding squad.
-            </p>
+            <p className="text-center text-muted-foreground mb-6">
+              Join the waitlist
+            </p> 
+            
+           
 
             <form onSubmit={handleWaitlistSignup} className="flex flex-col sm:flex-row gap-4">
               <Input
                 type="email"
-                placeholder="Drop your email—only the bold need apply"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="flex-1 bg-background/50 border-border/50 backdrop-blur-sm text-lg py-6"
                 required
               />
-              <Button type="submit" variant="hero" size="lg" className="py-6 px-8 text-lg">
-                Join the Squad
+              <Button 
+                type="submit" 
+                variant="hero" 
+                size="lg" 
+                className="py-6 px-8 text-lg"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Joining..." : "Join"}
                 <Trophy className="w-5 h-5 ml-2" />
               </Button>
             </form>
 
-            <p className="text-sm text-muted-foreground mt-4">
-              🏆 <strong>Founding Squad Perks:</strong> Early access, exclusive badges, and premium features
-            </p>
-          </div>
-
-          {/* Feature highlights */}
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <div className="flex flex-col items-center p-6 bg-card/20 backdrop-blur-sm rounded-xl border border-border/30">
-              <Target className="w-8 h-8 text-primary mb-3" />
-              <h4 className="font-semibold mb-2">Challenge Friends</h4>
-              <p className="text-sm text-muted-foreground text-center">Create rivalries that fuel your progress</p>
-            </div>
-            
-            <div className="flex flex-col items-center p-6 bg-card/20 backdrop-blur-sm rounded-xl border border-border/30">
-              <Trophy className="w-8 h-8 text-secondary mb-3" />
-              <h4 className="font-semibold mb-2">Climb the Ranks</h4>
-              <p className="text-sm text-muted-foreground text-center">Compete on leaderboards and earn your status</p>
-            </div>
-            
-            <div className="flex flex-col items-center p-6 bg-card/20 backdrop-blur-sm rounded-xl border border-border/30">
-              <Users className="w-8 h-8 text-accent mb-3" />
-              <h4 className="font-semibold mb-2">Real Accountability</h4>
-              <p className="text-sm text-muted-foreground text-center">Your community keeps you on track</p>
-            </div>
+           
           </div>
         </div>
       </div>
