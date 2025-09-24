@@ -68,7 +68,7 @@ const HeroSection = () => {
   return (
     <section className="relative min-h-screen bg-gradient-hero flex items-center justify-center overflow-hidden">
       {/* Logo */}
-      <div className="absolute top-1 left-8  z-15">
+      <div className="absolute top-2 left-3 md:top-6 md:left-6 z-20">
         <img 
           src={logo} 
           alt="Lockd Logo" 
