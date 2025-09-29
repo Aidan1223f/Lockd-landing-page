@@ -1,34 +1,29 @@
 {
   "redirects": [
     {
-      "source": "/poster-a",
+      "source": "/poster-ghosted",
       "destination": "https://getlockd.app",
       "permanent": true
     },
     {
-      "source": "/poster-b",
+      "source": "/poster-choppedUnemployed",
       "destination": "https://getlockd.app",
       "permanent": true
     },
     {
-      "source": "/poster-c",
+      "source": "/poster-ball",
       "destination": "https://getlockd.app",
       "permanent": true
     },
     {
-      "source": "/qr1",
-      "destination": "https://getlockd.app",
-      "permanent": true
-    },
-    {
-      "source": "/qr2",
-      "destination": "https://getlockd.app",
-      "permanent": true
-    },
-    {
-      "source": "/qr3",
-      "destination": "https://getlockd.app",
-      "permanent": true
+        "source": "/poster-cheated",
+        "destination": "https://getlockd.app",
+        "permanent": true
+      },
+      {
+        "source": "/poster-blackout",
+        "destination": "https://getlockd.app",
+        "permanent": true
     },
     {
       "source": "/social",
