@@ -72,7 +72,7 @@ const HeroSection = () => {
         <img 
           src={logo} 
           alt="Lockd Logo" 
-          className="h-24 -auto md:h-32"
+          className="h-24 w-auto md:h-32"
         />
       </div>
 
