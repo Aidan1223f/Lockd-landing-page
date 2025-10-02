@@ -84,14 +84,14 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen bg-gradient-hero flex items-center justify-center overflow-hidden">
-      {/* Logo */}
-      <div className="absolute top-2 left-3 md:top-6 md:left-6 z-20">
-        <img 
-          src={logo} 
-          alt="Lockd Logo" 
-          className="h-24 w-auto md:h-32"
-        />
-      </div>
+       {/* Logo */}
+       <div className="absolute top-2 left-3 md:top-6 md:left-6 z-20">
+         <img 
+           src={logo} 
+           alt="Lockd Logo" 
+           className="h-20 w-auto md:h-32"
+         />
+       </div>
 
 
       {/* Animated background elements */}
@@ -105,7 +105,7 @@ const HeroSection = () => {
         <div className="text-center max-w-4xl mx-auto pt-16">
           {/* Main headline */}
           <h1 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-foreground via-primary-glow to-secondary bg-clip-text text-transparent leading-tight">
-            Realize your Potential
+            LOCK THE F*CK IN
             <br />
             <span className="bg-gradient-primary bg-clip-text text-transparent"></span>
           </h1>
@@ -113,7 +113,7 @@ const HeroSection = () => {
           {/* Subheadline */}
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
             The{" "}
-            <span className="text-primary font-semibold">#1</span> app to help you actually lock in.
+            <span className="text-primary font-semibold">#1</span> self improvement app
           </p>
 
           {/* Join Waitlist Button */}
