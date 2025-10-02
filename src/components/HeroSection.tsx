@@ -102,16 +102,15 @@ const HeroSection = () => {
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <div className="text-center max-w-4xl mx-auto pt-16">
+        <div className="text-center max-w-4xl mx-auto pt-28">
           {/* Main headline */}
           <h1 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-foreground via-primary-glow to-secondary bg-clip-text text-transparent leading-tight">
-            Realize your Potential
-            <br />
+            Realize Your Potential
             <span className="bg-gradient-primary bg-clip-text text-transparent"></span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
             The{" "}
             <span className="text-primary font-semibold">#1</span> app to help you actually lock in.
           </p>
@@ -123,7 +122,7 @@ const HeroSection = () => {
               onTouchEnd={scrollToWaitlist}
               variant="outline"
               size="lg"
-              className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-purple-600 hover:text-white px-8 py-3"
+              className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-purple-600 hover:text-white px-8 py-3 rounded-2xl"
             >
               Join the Waitlist
             </Button>
@@ -250,14 +249,14 @@ const HeroSection = () => {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 bg-background/50 border-border/50 backdrop-blur-sm text-lg py-6"
+                className="flex-1 bg-background/50 border-border/50 backdrop-blur-sm text-lg py-6 rounded-2xl"
                 required
               />
               <Button 
                 type="submit" 
                 variant="hero" 
                 size="lg" 
-                className="py-6 px-8 text-lg"
+                className="py-6 px-8 text-lg rounded-2xl"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Joining..." : "Join"}
