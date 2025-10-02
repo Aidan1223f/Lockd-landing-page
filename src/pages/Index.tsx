@@ -1,4 +1,5 @@
 import HeroSection from "@/components/HeroSection";
+import AppShowcase from "@/components/AppShowcase";
 
 const Index = () => {
   return (
