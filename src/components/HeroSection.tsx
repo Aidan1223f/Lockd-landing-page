@@ -129,40 +129,107 @@ const HeroSection = () => {
             </Button>
           </div>
 
-          {/* App Mockups */}
-          <div className="mb-16 max-w-4xl mx-auto">
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <img 
-                  src={homeMockup} 
-                  alt="Lockd Home Screen - Daily tasks and progress tracking"
-                  className="w-full max-w-xs mx-auto rounded-xl shadow-2xl mb-4"
-                />
-                <h4 className="font-semibold text-white mb-2">Track Your Progress</h4>
-                <p className="text-base text-muted-foreground">Complete tasks and climb the ranks</p>
-              </div>
-              
-              <div className="text-center">
-                <img 
-                  src={feedMockup} 
-                  alt="Lockd Feed Screen - Social challenge updates"
-                  className="w-full max-w-xs mx-auto rounded-xl shadow-2xl mb-4"
-                />
-                <h4 className="font-semibold text-white mb-2">Stay Connected</h4>
-                <p className="text-base text-muted-foreground">See what your friends are accomplishing</p>
-              </div>
-              
-              <div className="text-center">
-                <img 
-                  src={leaderboardMockup} 
-                  alt="Lockd Leaderboard Screen - Global rankings"
-                  className="w-full max-w-xs mx-auto rounded-xl shadow-2xl mb-4"
-                />
-                <h4 className="font-semibold text-white mb-2">Compete Globally</h4>
-                <p className="text-base text-muted-foreground">Climb the global leaderboard</p>
-              </div>
-            </div>
-          </div>
+           {/* App Mockups - Mobile Vertical Stack, Desktop Horizontal Grid */}
+           <div className="mb-16 max-w-4xl mx-auto px-4">
+             {/* Mobile Layout - Vertical Stack */}
+             <div className="md:hidden space-y-8">
+               {/* Home Mockup */}
+               <div className="bg-card/20 backdrop-blur-sm rounded-2xl p-6 border border-border/30">
+                 <div className="flex flex-col items-center gap-6">
+                   <div className="flex-shrink-0">
+                     <img 
+                       src={homeMockup} 
+                       alt="Lockd Home Screen - Daily tasks and progress tracking"
+                       className="w-48 mx-auto rounded-xl shadow-2xl"
+                     />
+                   </div>
+                   <div className="text-center flex-1">
+                     <h4 className="text-xl font-bold text-white mb-3">Track Your Progress</h4>
+                     <p className="text-base text-muted-foreground leading-relaxed">
+                       Complete daily tasks and climb the ranks.
+                     </p>
+                   </div>
+                 </div>
+               </div>
+
+               {/* Feed Mockup */}
+               <div className="bg-card/20 backdrop-blur-sm rounded-2xl p-6 border border-border/30">
+                 <div className="flex flex-col items-center gap-6">
+                   <div className="flex-shrink-0">
+                     <img 
+                       src={feedMockup} 
+                       alt="Lockd Feed Screen - Social challenge updates"
+                       className="w-48 mx-auto rounded-xl shadow-2xl"
+                     />
+                   </div>
+                   <div className="text-center flex-1">
+                     <h4 className="text-xl font-bold text-white mb-3">Stay Connected</h4>
+                     <p className="text-base text-muted-foreground leading-relaxed">
+                       See what your friends are accomplishing.
+                     </p>
+                   </div>
+                 </div>
+               </div>
+
+               {/* Leaderboard Mockup */}
+               <div className="bg-card/20 backdrop-blur-sm rounded-2xl p-6 border border-border/30">
+                 <div className="flex flex-col items-center gap-6">
+                   <div className="flex-shrink-0">
+                     <img 
+                       src={leaderboardMockup} 
+                       alt="Lockd Leaderboard Screen - Global rankings"
+                       className="w-48 mx-auto rounded-xl shadow-2xl"
+                     />
+                   </div>
+                   <div className="text-center flex-1">
+                     <h4 className="text-xl font-bold text-white mb-3">Compete Globally</h4>
+                     <p className="text-base text-muted-foreground leading-relaxed">
+                       Climb the global leaderboard and prove you're the best.
+                     </p>
+                   </div>
+                 </div>
+               </div>
+             </div>
+
+             {/* Desktop Layout - Horizontal 3-Column Grid */}
+             <div className="hidden md:grid md:grid-cols-3 gap-6">
+               <div className="text-center">
+                 <div className="bg-card/20 backdrop-blur-sm rounded-2xl p-6 border border-border/30 mb-4">
+                   <img 
+                     src={homeMockup} 
+                     alt="Lockd Home Screen - Daily tasks and progress tracking"
+                     className="w-full max-w-xs mx-auto rounded-xl shadow-2xl"
+                   />
+                 </div>
+                 <h4 className="font-semibold text-white mb-2">Track Your Progress</h4>
+                 <p className="text-sm text-muted-foreground">Complete daily tasks and climb the ranks</p>
+               </div>
+               
+               <div className="text-center">
+                 <div className="bg-card/20 backdrop-blur-sm rounded-2xl p-6 border border-border/30 mb-4">
+                   <img 
+                     src={feedMockup} 
+                     alt="Lockd Feed Screen - Social challenge updates"
+                     className="w-full max-w-xs mx-auto rounded-xl shadow-2xl"
+                   />
+                 </div>
+                 <h4 className="font-semibold text-white mb-2">Stay Connected</h4>
+                 <p className="text-sm text-muted-foreground">See what your friends are accomplishing</p>
+               </div>
+               
+               <div className="text-center">
+                 <div className="bg-card/20 backdrop-blur-sm rounded-2xl p-6 border border-border/30 mb-4">
+                   <img 
+                     src={leaderboardMockup} 
+                     alt="Lockd Leaderboard Screen - Global rankings"
+                     className="w-full max-w-xs mx-auto rounded-xl shadow-2xl"
+                   />
+                 </div>
+                 <h4 className="font-semibold text-white mb-2">Compete Globally</h4>
+                 <p className="text-sm text-muted-foreground">Climb the global leaderboard</p>
+               </div>
+             </div>
+           </div>
 
           {/* CTA Section */}
          <div id="waitlist-section" className="bg-card/30 backdrop-blur-sm rounded-2xl p-8 border border-border/50 max-w-2xl mx-auto mb-16">
