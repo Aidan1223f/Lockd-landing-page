@@ -16,7 +16,14 @@ const HeroSection = () => {
   const scrollToWaitlist = () => {
     const waitlistSection = document.getElementById('waitlist-section');
     if (waitlistSection) {
-      waitlistSection.scrollIntoView({ behavior: 'smooth' });
+      // Use requestAnimationFrame for better mobile compatibility
+      requestAnimationFrame(() => {
+        waitlistSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'nearest'
+        });
+      });
     }
   };
 
@@ -113,6 +120,7 @@ const HeroSection = () => {
           <div className="mb-12">
             <Button 
               onClick={scrollToWaitlist}
+              onTouchEnd={scrollToWaitlist}
               variant="outline"
               size="lg"
               className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-purple-600 hover:text-white px-8 py-3"
