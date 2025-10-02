@@ -5,10 +5,20 @@ import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import logo from "@/assets/lockd_logo_transparent.png";
+import feedMockup from "@/assets/feed.png";
+import homeMockup from "@/assets/home.png";
+import leaderboardMockup from "@/assets/leaderboard.png";
 
 const HeroSection = () => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const scrollToWaitlist = () => {
+    const waitlistSection = document.getElementById('waitlist-section');
+    if (waitlistSection) {
+      waitlistSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const submitEmail = async (email: string) => {
     // Validate email before submission
@@ -76,6 +86,7 @@ const HeroSection = () => {
         />
       </div>
 
+
       {/* Animated background elements */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-primary rounded-full blur-3xl animate-float"></div>
@@ -84,7 +95,7 @@ const HeroSection = () => {
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <div className="text-center max-w-4xl mx-auto">
+        <div className="text-center max-w-4xl mx-auto pt-16">
           {/* Main headline */}
           <h1 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-foreground via-primary-glow to-secondary bg-clip-text text-transparent leading-tight">
             Realize your Potential
@@ -93,13 +104,60 @@ const HeroSection = () => {
           </h1>
 
           {/* Subheadline */}
-          <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
             The{" "}
             <span className="text-primary font-semibold">#1</span> app to help you actually lock in.
           </p>
 
+          {/* Join Waitlist Button */}
+          <div className="mb-12">
+            <Button 
+              onClick={scrollToWaitlist}
+              variant="outline"
+              size="lg"
+              className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-purple-600 hover:text-white px-8 py-3"
+            >
+              Join the Waitlist
+            </Button>
+          </div>
+
+          {/* App Mockups */}
+          <div className="mb-16 max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <img 
+                  src={homeMockup} 
+                  alt="Lockd Home Screen - Daily tasks and progress tracking"
+                  className="w-full max-w-xs mx-auto rounded-xl shadow-2xl mb-4"
+                />
+                <h4 className="font-semibold text-white mb-2">Track Your Progress</h4>
+                <p className="text-base text-muted-foreground">Complete tasks and climb the ranks</p>
+              </div>
+              
+              <div className="text-center">
+                <img 
+                  src={feedMockup} 
+                  alt="Lockd Feed Screen - Social challenge updates"
+                  className="w-full max-w-xs mx-auto rounded-xl shadow-2xl mb-4"
+                />
+                <h4 className="font-semibold text-white mb-2">Stay Connected</h4>
+                <p className="text-base text-muted-foreground">See what your friends are accomplishing</p>
+              </div>
+              
+              <div className="text-center">
+                <img 
+                  src={leaderboardMockup} 
+                  alt="Lockd Leaderboard Screen - Global rankings"
+                  className="w-full max-w-xs mx-auto rounded-xl shadow-2xl mb-4"
+                />
+                <h4 className="font-semibold text-white mb-2">Compete Globally</h4>
+                <p className="text-base text-muted-foreground">Climb the global leaderboard</p>
+              </div>
+            </div>
+          </div>
+
           {/* CTA Section */}
-         <div className="bg-card/30 backdrop-blur-sm rounded-2xl p-8 border border-border/50 max-w-2xl mx-auto mb-16">
+         <div id="waitlist-section" className="bg-card/30 backdrop-blur-sm rounded-2xl p-8 border border-border/50 max-w-2xl mx-auto mb-16">
             <div className="flex items-center justify-center gap-2 mb-4">
               <Zap className="w-5 h-5 text-secondary animate-pulse-glow" />
               <h3 className="text-2xl font-bold">Be the first to experience Lockd.</h3>
