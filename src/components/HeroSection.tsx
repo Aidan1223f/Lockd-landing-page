@@ -84,14 +84,14 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen bg-gradient-hero flex items-center justify-center overflow-hidden">
-       {/* Logo */}
-       <div className="absolute top-2 left-3 md:top-6 md:left-6 z-20">
-         <img 
-           src={logo} 
-           alt="Lockd Logo" 
-           className="h-20 w-auto md:h-32"
-         />
-       </div>
+      {/* Logo */}
+      <div className="absolute top-1 left-3 md:left-16 z-20">
+        <img 
+          src={logo} 
+          alt="Lockd Logo" 
+          className="h-24 w-auto md:h-32"
+        />
+      </div>
 
 
       {/* Animated background elements */}
@@ -102,7 +102,7 @@ const HeroSection = () => {
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <div className="text-center max-w-4xl mx-auto pt-16">
+        <div className="text-center max-w-4xl mx-auto pt-28">
           {/* Main headline */}
           <h1 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-foreground via-primary-glow to-secondary bg-clip-text text-transparent leading-tight">
             LOCK THE F*CK IN
@@ -111,7 +111,7 @@ const HeroSection = () => {
           </h1>
 
           {/* Subheadline */}
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
             The{" "}
             <span className="text-primary font-semibold">#1</span> self improvement app
           </p>
@@ -123,7 +123,7 @@ const HeroSection = () => {
               onTouchEnd={scrollToWaitlist}
               variant="outline"
               size="lg"
-              className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-purple-600 hover:text-white px-8 py-3"
+              className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-purple-600 hover:text-white px-8 py-3 rounded-2xl"
             >
               Join the Waitlist
             </Button>
@@ -250,14 +250,14 @@ const HeroSection = () => {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 bg-background/50 border-border/50 backdrop-blur-sm text-lg py-6"
+                className="flex-1 bg-background/50 border-border/50 backdrop-blur-sm text-lg py-6 rounded-2xl"
                 required
               />
               <Button 
                 type="submit" 
                 variant="hero" 
                 size="lg" 
-                className="py-6 px-8 text-lg"
+                className="py-6 px-8 text-lg rounded-2xl"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Joining..." : "Join"}
