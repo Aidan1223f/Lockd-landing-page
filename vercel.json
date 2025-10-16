@@ -39,6 +39,17 @@
       "source": "/erhs",
       "destination": "https://getlockd.app ",
       "permanent": true
+    },
+    {
+      "source": "/poster-Midterms",
+      "destination": "https://getlockd.app ",
+      "permanent": true
+    },
+    {
+      "source": "/erhs",
+      "destination": "https://getlockd.app ",
+      "permanent": true
     }
+    
   ]
 }
