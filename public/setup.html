@@ -354,8 +354,10 @@
       submitButton.textContent = 'Processing...';
 
       try {
-        // Create debit card token for instant payouts
-        const { token: cardToken, error } = await stripe.createToken(cardElement);
+        // Create card token with currency specified (required for external accounts)
+        const { token: cardToken, error } = await stripe.createToken(cardElement, {
+          currency: 'usd'
+        });
 
         if (error) {
           document.getElementById('card-errors').textContent = error.message;
