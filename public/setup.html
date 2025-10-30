@@ -80,7 +80,8 @@
 
     input[type="text"],
     input[type="email"],
-    input[type="tel"] {
+    input[type="tel"],
+    select {
       width: 100%;
       padding: 12px;
       border: 2px solid #e0e0e0;
@@ -88,11 +89,13 @@
       font-size: 16px;
       margin-bottom: 16px;
       transition: border-color 0.3s;
+      background: white;
     }
 
     input[type="text"]:focus,
     input[type="email"]:focus,
-    input[type="tel"]:focus {
+    input[type="tel"]:focus,
+    select:focus {
       outline: none;
       border-color: #7634D7;
     }
@@ -212,7 +215,7 @@
     <!-- Form State -->
     <div id="form-state" style="display: none;">
       <h1>You've Been Invited!</h1>
-      <p class="subtitle">Complete your setup to start receiving payments</p>
+      <p class="subtitle">Complete your setup to start receiving instant payments to your debit card</p>
 
       <div class="info-box">
         <p><strong id="recipient-name"></strong>, you've been invited to receive accountability payments.</p>
@@ -228,9 +231,11 @@
         <label for="phone">Phone Number (Optional)</label>
         <input type="tel" id="phone" placeholder="+1 (555) 123-4567">
 
-        <label>Debit Card</label>
-        <div id="card-element"></div>
-        <div id="card-errors"></div>
+        <label>Debit Card Information</label>
+        <div id="card-element">
+          <!-- Stripe Elements will create form elements here -->
+        </div>
+        <div id="card-errors" role="alert"></div>
 
         <button type="submit" id="submit-button">
           Complete Setup
@@ -244,22 +249,22 @@
         <div class="success-icon">✅</div>
         <h2>All Set!</h2>
         <p id="success-message"></p>
-        <a href="https://testflight.apple.com/join/mzJqUGPY" class="download-link">Download Lockd App</a>
+        <a href="#" class="download-link">Download Lockd App</a>
       </div>
     </div>
   </div>
 
   <script>
     // Configuration - UPDATE THESE VALUES
-    const SUPABASE_URL = 'https://wlpwfprmkoqjbztxuogr.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndscHdmcHJta29xamJ6dHh1b2dyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMjI5MzAsImV4cCI6MjA3MDY5ODkzMH0.Hh9cDSxTPCN3rB2ItoHKBDIBaGO2yyC-DQ7WVmvsivM';
-    const STRIPE_PUBLISHABLE_KEY = 'pk_test_51SMe4jC89gv3wtwgJXJ2wzEz12zF3A7X62SOPns1c1AAvMf2Y1EJQufjMhGqif8Dw7SwaLJQSIV0sODlzbGhnZnj00um9lsG8M';
+    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    const STRIPE_PUBLISHABLE_KEY = 'YOUR_STRIPE_PUBLISHABLE_KEY';
 
     // Get token from URL
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token') || window.location.pathname.split('/').pop();
 
-    // Initialize Stripe
+    // Initialize Stripe with publishable key
     const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
     const elements = stripe.elements();
     const cardElement = elements.create('card', {
@@ -349,7 +354,7 @@
       submitButton.textContent = 'Processing...';
 
       try {
-        // Create card token
+        // Create debit card token for instant payouts
         const { token: cardToken, error } = await stripe.createToken(cardElement);
 
         if (error) {
@@ -359,7 +364,7 @@
           return;
         }
 
-        // Submit to edge function
+        // Submit to edge function with card token
         const phone = document.getElementById('phone').value;
         const response = await fetch(`${SUPABASE_URL}/functions/v1/complete-recipient-onboarding`, {
           method: 'POST',
@@ -383,7 +388,7 @@
           return;
         }
 
-        showSuccess('You\'re all set! You\'ll receive payments to your debit card.');
+        showSuccess('You\'re all set! You\'ll receive instant payments to your debit card.');
       } catch (error) {
         document.getElementById('card-errors').textContent = 'An unexpected error occurred. Please try again.';
         submitButton.disabled = false;
