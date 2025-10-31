@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Your Identity - Lockd</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 550px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo {
+      font-size: 32px;
+      font-weight: 800;
+      color: #7634D7;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .subtitle {
+      color: #666;
+      text-align: center;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+
+    .info-box {
+      background: #f0f7ff;
+      border-left: 4px solid #7634D7;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .info-box p {
+      color: #333;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .info-box strong {
+      color: #7634D7;
+    }
+
+    .why-needed {
+      background: #fff9e6;
+      border-left: 4px solid #f59e0b;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+      cursor: pointer;
+    }
+
+    .why-needed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .why-needed-content {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #666;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .why-needed-content.show {
+      display: block;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+      margin-top: 16px;
+    }
+
+    label .required {
+      color: #ef4444;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 8px;
+      transition: border-color 0.3s;
+      background: white;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #7634D7;
+    }
+
+    .dob-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.5fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .input-hint {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 16px;
+    }
+
+    .error {
+      background: #fee2e2;
+      border: 2px solid #ef4444;
+      color: #dc2626;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .success {
+      background: #d1fae5;
+      border: 2px solid #10b981;
+      color: #047857;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .success-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      background: #7634D7;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 8px;
+    }
+
+    button:hover:not(:disabled) {
+      background: #5e2ba8;
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #7634D7;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .security-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+      margin-top: 16px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .security-icon {
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">Lockd</div>
+
+    <!-- Loading State -->
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Loading verification...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error-state" style="display: none;">
+      <h1>Verification Error</h1>
+      <div class="error" id="error-message"></div>
+    </div>
+
+    <!-- Form State -->
+    <div id="form-state" style="display: none;">
+      <h1>Quick Verification Needed</h1>
+      <p class="subtitle">Complete verification to access your money</p>
+
+      <div class="info-box">
+        <p><strong>Almost there!</strong> We need a few more details to enable withdrawals. This process is quick and secure.</p>
+      </div>
+
+      <div class="why-needed" onclick="toggleWhyNeeded()">
+        <div class="why-needed-header">
+          <span>🔒 Why do we need this information?</span>
+          <span id="why-arrow">▼</span>
+        </div>
+        <div class="why-needed-content" id="why-content">
+          <p><strong>Federal regulations require</strong> us to verify your identity before processing withdrawals. This helps prevent fraud and money laundering.</p>
+          <p><strong>Your information is secure:</strong> All data is encrypted and securely stored by Stripe, our payment processor. We never store your SSN in our database.</p>
+          <p><strong>One-time verification:</strong> You only need to do this once. Future withdrawals will be instant.</p>
+        </div>
+      </div>
+
+      <form id="verification-form">
+        <label for="ssn">Social Security Number (Last 4 Digits) <span class="required">*</span></label>
+        <input type="text" id="ssn" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" placeholder="1234" required>
+        <div class="input-hint">Enter the last 4 digits of your SSN</div>
+
+        <label>Date of Birth <span class="required">*</span></label>
+        <div class="dob-row">
+          <select id="dob-month" required>
+            <option value="">Month</option>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+          <select id="dob-day" required>
+            <option value="">Day</option>
+          </select>
+          <select id="dob-year" required>
+            <option value="">Year</option>
+          </select>
+        </div>
+        <div class="input-hint">You must be at least 18 years old</div>
+
+        <label for="address">Street Address <span class="required">*</span></label>
+        <input type="text" id="address" placeholder="123 Main St" required>
+
+        <label for="address2">Address Line 2 (Optional)</label>
+        <input type="text" id="address2" placeholder="Apt 4B">
+
+        <label for="city">City <span class="required">*</span></label>
+        <input type="text" id="city" placeholder="San Francisco" required>
+
+        <label for="state">State <span class="required">*</span></label>
+        <select id="state" required>
+          <option value="">Select State</option>
+          <option value="AL">Alabama</option>
+          <option value="AK">Alaska</option>
+          <option value="AZ">Arizona</option>
+          <option value="AR">Arkansas</option>
+          <option value="CA">California</option>
+          <option value="CO">Colorado</option>
+          <option value="CT">Connecticut</option>
+          <option value="DE">Delaware</option>
+          <option value="FL">Florida</option>
+          <option value="GA">Georgia</option>
+          <option value="HI">Hawaii</option>
+          <option value="ID">Idaho</option>
+          <option value="IL">Illinois</option>
+          <option value="IN">Indiana</option>
+          <option value="IA">Iowa</option>
+          <option value="KS">Kansas</option>
+          <option value="KY">Kentucky</option>
+          <option value="LA">Louisiana</option>
+          <option value="ME">Maine</option>
+          <option value="MD">Maryland</option>
+          <option value="MA">Massachusetts</option>
+          <option value="MI">Michigan</option>
+          <option value="MN">Minnesota</option>
+          <option value="MS">Mississippi</option>
+          <option value="MO">Missouri</option>
+          <option value="MT">Montana</option>
+          <option value="NE">Nebraska</option>
+          <option value="NV">Nevada</option>
+          <option value="NH">New Hampshire</option>
+          <option value="NJ">New Jersey</option>
+          <option value="NM">New Mexico</option>
+          <option value="NY">New York</option>
+          <option value="NC">North Carolina</option>
+          <option value="ND">North Dakota</option>
+          <option value="OH">Ohio</option>
+          <option value="OK">Oklahoma</option>
+          <option value="OR">Oregon</option>
+          <option value="PA">Pennsylvania</option>
+          <option value="RI">Rhode Island</option>
+          <option value="SC">South Carolina</option>
+          <option value="SD">South Dakota</option>
+          <option value="TN">Tennessee</option>
+          <option value="TX">Texas</option>
+          <option value="UT">Utah</option>
+          <option value="VT">Vermont</option>
+          <option value="VA">Virginia</option>
+          <option value="WA">Washington</option>
+          <option value="WV">West Virginia</option>
+          <option value="WI">Wisconsin</option>
+          <option value="WY">Wyoming</option>
+          <option value="DC">Washington DC</option>
+        </select>
+
+        <label for="zip">ZIP Code <span class="required">*</span></label>
+        <input type="text" id="zip" maxlength="5" pattern="[0-9]{5}" inputmode="numeric" placeholder="94102" required>
+
+        <div id="form-error" class="error" style="display: none;"></div>
+
+        <button type="submit" id="submit-button">
+          Verify My Identity
+        </button>
+
+        <div class="security-badge">
+          <span class="security-icon">🔐</span>
+          <span>Your information is encrypted and securely processed by Stripe</span>
+        </div>
+      </form>
+    </div>
+
+    <!-- Success State -->
+    <div id="success-state" style="display: none;">
+      <div class="success">
+        <div class="success-icon">✅</div>
+        <h2 id="success-title">Verification Complete!</h2>
+        <p id="success-message"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Configuration
+    const SUPABASE_URL = 'https://wlpwfprmkoqjbztxuogr.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndscHdmcHJta29xamJ6dHh1b2dyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMjI5MzAsImV4cCI6MjA3MDY5ODkzMH0.Hh9cDSxTPCN3rB2ItoHKBDIBaGO2yyC-DQ7WVmvsivM';
+
+    // Get account ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const accountId = urlParams.get('account');
+
+    // Populate day and year dropdowns
+    function populateDateDropdowns() {
+      const daySelect = document.getElementById('dob-day');
+      for (let i = 1; i <= 31; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        daySelect.appendChild(option);
+      }
+
+      const yearSelect = document.getElementById('dob-year');
+      const currentYear = new Date().getFullYear();
+      for (let i = currentYear - 18; i >= currentYear - 100; i--) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        yearSelect.appendChild(option);
+      }
+    }
+
+    function toggleWhyNeeded() {
+      const content = document.getElementById('why-content');
+      const arrow = document.getElementById('why-arrow');
+      if (content.classList.contains('show')) {
+        content.classList.remove('show');
+        arrow.textContent = '▼';
+      } else {
+        content.classList.add('show');
+        arrow.textContent = '▲';
+      }
+    }
+
+    function showForm() {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('form-state').style.display = 'block';
+    }
+
+    function showError(message) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('error-state').style.display = 'block';
+      document.getElementById('error-message').textContent = message;
+    }
+
+    function showSuccess(title, message) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('form-state').style.display = 'none';
+      document.getElementById('success-state').style.display = 'block';
+      document.getElementById('success-title').textContent = title;
+      document.getElementById('success-message').textContent = message;
+    }
+
+    // Initialize
+    if (!accountId || !accountId.startsWith('acct_')) {
+      showError('Invalid verification link. Please use the link provided in your notification.');
+    } else {
+      populateDateDropdowns();
+      showForm();
+    }
+
+    // Handle form submission
+    document.getElementById('verification-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const submitButton = document.getElementById('submit-button');
+      const formError = document.getElementById('form-error');
+
+      // Clear previous errors
+      formError.style.display = 'none';
+
+      // Get form values
+      const ssnLast4 = document.getElementById('ssn').value.trim();
+      const dobMonth = parseInt(document.getElementById('dob-month').value);
+      const dobDay = parseInt(document.getElementById('dob-day').value);
+      const dobYear = parseInt(document.getElementById('dob-year').value);
+      const addressLine1 = document.getElementById('address').value.trim();
+      const addressLine2 = document.getElementById('address2').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const state = document.getElementById('state').value;
+      const postalCode = document.getElementById('zip').value.trim();
+
+      // Disable button and show loading
+      submitButton.disabled = true;
+      submitButton.textContent = 'Verifying...';
+
+      try {
+        const response = await fetch(`${SUPABASE_URL}/functions/v1/submit-identity-verification`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            accountId,
+            ssnLast4,
+            dobDay,
+            dobMonth,
+            dobYear,
+            addressLine1,
+            addressLine2: addressLine2 || undefined,
+            city,
+            state,
+            postalCode,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          formError.textContent = data.error || 'Verification failed. Please try again.';
+          formError.style.display = 'block';
+          submitButton.disabled = false;
+          submitButton.textContent = 'Verify My Identity';
+          return;
+        }
+
+        // Success!
+        if (data.status === 'verified') {
+          showSuccess(
+            'Verification Complete!',
+            'Your identity has been verified. You can now withdraw funds!'
+          );
+        } else if (data.status === 'under_review') {
+          showSuccess(
+            'Verification Submitted!',
+            'Your information is being reviewed. This typically takes up to 24 hours. We\'ll notify you when it\'s complete.'
+          );
+        } else {
+          showSuccess(
+            'Information Submitted',
+            data.message || 'Your information has been submitted for verification.'
+          );
+        }
+
+      } catch (error) {
+        console.error('Verification error:', error);
+        formError.textContent = 'An unexpected error occurred. Please try again.';
+        formError.style.display = 'block';
+        submitButton.disabled = false;
+        submitButton.textContent = 'Verify My Identity';
+      }
+    });
+
+    // SSN input validation (numbers only)
+    document.getElementById('ssn').addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    });
+
+    // ZIP input validation (numbers only)
+    document.getElementById('zip').addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    });
+  </script>
+</body>
+</html>
+
+
