@@ -400,7 +400,22 @@
 
     // Get token from URL
     const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token') || window.location.pathname.split('/').pop();
+    let token = urlParams.get('token');
+    
+    // If no token in query params, try to get from pathname
+    if (!token || token.trim() === '') {
+      const pathParts = window.location.pathname.split('/').filter(p => p && p !== 'setup.html');
+      token = pathParts.length > 0 ? pathParts[pathParts.length - 1] : null;
+    }
+    
+    // Clean up token
+    if (token) {
+      token = token.trim();
+      // Remove any file extension if present
+      if (token.endsWith('.html')) {
+        token = null;
+      }
+    }
 
     // Initialize Stripe with publishable key
     const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
@@ -648,6 +663,20 @@
           : null;
 
         // Validate required fields
+        if (!token || token === '') {
+          document.getElementById('card-errors').textContent = 'Invalid invite token. Please use the correct invite link.';
+          submitButton.disabled = false;
+          submitButton.textContent = 'Complete Setup';
+          return;
+        }
+
+        if (!cardToken || !cardToken.id) {
+          document.getElementById('card-errors').textContent = 'Please enter a valid debit card.';
+          submitButton.disabled = false;
+          submitButton.textContent = 'Complete Setup';
+          return;
+        }
+
         if (!ssnLast4 || ssnLast4.length !== 4) {
           document.getElementById('card-errors').textContent = 'Please enter a valid SSN last 4 digits.';
           submitButton.disabled = false;
@@ -655,8 +684,8 @@
           return;
         }
 
-        if (!dob) {
-          document.getElementById('card-errors').textContent = 'Please select your date of birth.';
+        if (!dob || !dobYear || !dobMonth || !dobDay) {
+          document.getElementById('card-errors').textContent = 'Please select your complete date of birth.';
           submitButton.disabled = false;
           submitButton.textContent = 'Complete Setup';
           return;
@@ -669,33 +698,94 @@
           return;
         }
 
-                 // Submit to edge function with all data
-         const response = await fetch(`${SUPABASE_URL}/functions/v1/complete-recipient-onboarding`, {
-           method: 'POST',
-           headers: {
-             'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-             'Content-Type': 'application/json',
-           },
-           body: JSON.stringify({
-             token,
-             debitCardToken: cardToken.id,
-             phone: phone,
-             ssnLast4: ssnLast4,
-             DOB: dob,
-             address: {
-               line1: addressLine1,
-               line2: addressLine2 || null,
-               city: city,
-               state: state,
-               zip: zip,
-             },
-           }),
-         });
+        if (!addressLine1 || addressLine1.trim() === '') {
+          document.getElementById('card-errors').textContent = 'Please enter your street address.';
+          submitButton.disabled = false;
+          submitButton.textContent = 'Complete Setup';
+          return;
+        }
 
-        const data = await response.json();
+        if (!city || city.trim() === '') {
+          document.getElementById('card-errors').textContent = 'Please enter your city.';
+          submitButton.disabled = false;
+          submitButton.textContent = 'Complete Setup';
+          return;
+        }
+
+        if (!state || state === '') {
+          document.getElementById('card-errors').textContent = 'Please select your state.';
+          submitButton.disabled = false;
+          submitButton.textContent = 'Complete Setup';
+          return;
+        }
+
+        if (!zip || zip.trim() === '') {
+          document.getElementById('card-errors').textContent = 'Please enter your ZIP code.';
+          submitButton.disabled = false;
+          submitButton.textContent = 'Complete Setup';
+          return;
+        }
+
+        // Validate and format ZIP code (accept 5 digits or 5+4 format)
+        const zipDigits = zip.replace(/\D/g, '');
+        if (zipDigits.length < 5) {
+          document.getElementById('card-errors').textContent = 'Please enter a valid ZIP code (at least 5 digits).';
+          submitButton.disabled = false;
+          submitButton.textContent = 'Complete Setup';
+          return;
+        }
+        
+        // Use first 5 digits for ZIP (ZIP+4 format will use first 5)
+        const formattedZip = zipDigits.length >= 5 ? zipDigits.substring(0, 5) : zipDigits;
+
+        // Prepare request payload
+        const requestPayload = {
+          token: token,
+          debitCardToken: cardToken.id,
+          phone: phone,
+          ssnLast4: ssnLast4,
+          DOB: dob,
+          address: {
+            line1: addressLine1,
+            line2: addressLine2 || null,
+            city: city,
+            state: state,
+            zip: formattedZip,
+          },
+        };
+
+        // Debug: Log the payload (remove in production if needed)
+        console.log('Submitting form with payload:', { ...requestPayload, debitCardToken: '***' });
+
+        // Submit to edge function with all data
+        const response = await fetch(`${SUPABASE_URL}/functions/v1/complete-recipient-onboarding`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestPayload),
+        });
+
+        const responseText = await response.text();
+        let data;
+        
+        try {
+          data = JSON.parse(responseText);
+        } catch (e) {
+          console.error('Failed to parse response:', responseText);
+          document.getElementById('card-errors').textContent = 'Server returned an invalid response. Please try again.';
+          submitButton.disabled = false;
+          submitButton.textContent = 'Complete Setup';
+          return;
+        }
+
+        console.log('Server response:', data);
 
         if (!data.success) {
-          document.getElementById('card-errors').textContent = data.error || 'Setup failed. Please try again.';
+          const errorMessage = data.error || data.message || 'Setup failed. Please try again.';
+          console.error('Server error:', errorMessage);
+          document.getElementById('card-errors').textContent = errorMessage;
           submitButton.disabled = false;
           submitButton.textContent = 'Complete Setup';
           return;
@@ -703,7 +793,8 @@
 
         showSuccess('You\'re all set! You\'ll receive instant payments to your debit card.');
       } catch (error) {
-        document.getElementById('card-errors').textContent = 'An unexpected error occurred. Please try again.';
+        console.error('Form submission error:', error);
+        document.getElementById('card-errors').textContent = 'An unexpected error occurred. Please check the console for details and try again.';
         submitButton.disabled = false;
         submitButton.textContent = 'Complete Setup';
       }
