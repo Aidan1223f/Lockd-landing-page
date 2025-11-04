@@ -669,28 +669,28 @@
           return;
         }
 
-        // Submit to edge function with all data
-        const response = await fetch(`${SUPABASE_URL}/functions/v1/complete-recipient-onboarding`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            token,
-            debitCardToken: cardToken.id,
-            phone: phone,
-            ssnLast4: ssnLast4,
-            dob: dob,
-            address: {
-              line1: addressLine1,
-              line2: addressLine2 || null,
-              city: city,
-              state: state,
-              zip: zip,
-            },
-          }),
-        });
+                 // Submit to edge function with all data
+         const response = await fetch(`${SUPABASE_URL}/functions/v1/complete-recipient-onboarding`, {
+           method: 'POST',
+           headers: {
+             'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+             'Content-Type': 'application/json',
+           },
+           body: JSON.stringify({
+             token,
+             debitCardToken: cardToken.id,
+             phone: phone,
+             ssnLast4: ssnLast4,
+             DOB: dob,
+             address: {
+               line1: addressLine1,
+               line2: addressLine2 || null,
+               city: city,
+               state: state,
+               zip: zip,
+             },
+           }),
+         });
 
         const data = await response.json();
 
