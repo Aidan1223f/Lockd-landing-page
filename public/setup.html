@@ -245,6 +245,15 @@
         <p><strong id="recipient-name"></strong>, you've been invited to receive accountability payments.</p>
       </div>
 
+      <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px; border-radius: 4px; margin-bottom: 20px; font-size: 13px;">
+        <strong style="color: #f59e0b;">🔒 Why we collect this information:</strong>
+        <ul style="margin: 8px 0 0 20px; color: #78350f;">
+          <li>Federal law requires identity verification for payment processing</li>
+          <li>Your information is encrypted and securely processed by Stripe</li>
+          <li>We never store your full SSN or card details</li>
+        </ul>
+      </div>
+
       <form id="payment-form">
         <label for="name">Full Name</label>
         <input type="text" id="name" required disabled>
@@ -375,6 +384,19 @@
           <div id="card-errors" role="alert"></div>
         </div>
 
+        <div style="background: #f9fafb; border: 1px solid #e5e7eb; padding: 16px; border-radius: 8px; margin: 20px 0; font-size: 12px; color: #6b7280;">
+          <p style="margin-bottom: 12px;">By clicking "Complete Setup", you agree to:</p>
+          <ul style="margin: 0 0 12px 20px; line-height: 1.8;">
+            <li>Lockd's <a href="https://getlockd.app/terms" target="_blank" style="color: #7634D7; text-decoration: underline;">Terms of Service</a></li>
+            <li>Lockd's <a href="https://getlockd.app/privacy" target="_blank" style="color: #7634D7; text-decoration: underline;">Privacy Policy</a></li>
+            <li>Stripe's <a href="https://stripe.com/connect-account/legal" target="_blank" style="color: #7634D7; text-decoration: underline;">Connected Account Agreement</a></li>
+          </ul>
+          <p style="margin: 0; font-size: 11px; color: #9ca3af;">
+            <strong>Payment fees:</strong> A processing fee of ~$0.60 per transaction will be added to charges.
+            Payouts arrive in 2-3 business days at no cost.
+          </p>
+        </div>
+
         <button type="submit" id="submit-button">
           Complete Setup
         </button>
@@ -387,8 +409,25 @@
         <div class="success-icon">✅</div>
         <h2>All Set!</h2>
         <p id="success-message"></p>
-        <a href="#" class="download-link">Download Lockd App</a>
+        <a href="https://getlockd.app" class="download-link">Go to Lockd</a>
       </div>
+    </div>
+
+    <!-- Trust Badges Footer -->
+    <div style="text-align: center; margin-top: 20px; padding: 16px; font-size: 12px; color: #9ca3af;">
+      <div style="margin-bottom: 12px;">
+        <span style="margin: 0 12px;">🔒 Bank-level encryption</span>
+        <span style="margin: 0 12px;">✓ PCI DSS compliant</span>
+        <span style="margin: 0 12px;">🛡️ Powered by Stripe</span>
+      </div>
+      <p style="margin: 8px 0 0 0; font-size: 11px;">
+        Your data is encrypted and processed securely. We never see or store your full card details.
+      </p>
+      <p style="margin: 8px 0 0 0; font-size: 11px;">
+        <a href="mailto:support@getlockd.app" style="color: #7634D7; text-decoration: underline;">Need help?</a> •
+        <a href="https://getlockd.app/privacy" style="color: #7634D7; text-decoration: underline;">Privacy</a> •
+        <a href="https://getlockd.app/terms" style="color: #7634D7; text-decoration: underline;">Terms</a>
+      </p>
     </div>
   </div>
 
