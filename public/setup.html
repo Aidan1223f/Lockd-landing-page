@@ -657,11 +657,6 @@
         const state = document.getElementById('state').value;
         const zip = document.getElementById('zip').value.trim();
 
-        // Format date of birth as YYYY-MM-DD
-        const dob = dobYear && dobMonth && dobDay 
-          ? `${dobYear}-${dobMonth}-${dobDay}`
-          : null;
-
         // Validate required fields
         if (!token || token === '') {
           document.getElementById('card-errors').textContent = 'Invalid invite token. Please use the correct invite link.';
@@ -684,7 +679,7 @@
           return;
         }
 
-        if (!dob || !dobYear || !dobMonth || !dobDay) {
+        if (!dobYear || !dobMonth || !dobDay) {
           document.getElementById('card-errors').textContent = 'Please select your complete date of birth.';
           submitButton.disabled = false;
           submitButton.textContent = 'Complete Setup';
@@ -736,22 +731,38 @@
         }
         
         // Use first 5 digits for ZIP (ZIP+4 format will use first 5)
-        const formattedZip = zipDigits.length >= 5 ? zipDigits.substring(0, 5) : zipDigits;
+        const postalCode = zipDigits.length >= 5 ? zipDigits.substring(0, 5) : zipDigits;
 
-        // Prepare request payload
+        // Format phone with +1 prefix
+        const formattedPhone = `+1${phone}`;
+
+        // Convert DOB fields to numbers
+        const dobDayNum = parseInt(dobDay, 10);
+        const dobMonthNum = parseInt(dobMonth, 10);
+        const dobYearNum = parseInt(dobYear, 10);
+
+        // Validate DOB numbers
+        if (isNaN(dobDayNum) || isNaN(dobMonthNum) || isNaN(dobYearNum)) {
+          document.getElementById('card-errors').textContent = 'Please select a valid date of birth.';
+          submitButton.disabled = false;
+          submitButton.textContent = 'Complete Setup';
+          return;
+        }
+
+        // Prepare request payload matching database expected format
         const requestPayload = {
           token: token,
           debitCardToken: cardToken.id,
-          phone: phone,
+          phone: formattedPhone,
           ssnLast4: ssnLast4,
-          DOB: dob,
-          address: {
-            line1: addressLine1,
-            line2: addressLine2 || null,
-            city: city,
-            state: state,
-            zip: formattedZip,
-          },
+          dobDay: dobDayNum,
+          dobMonth: dobMonthNum,
+          dobYear: dobYearNum,
+          addressLine1: addressLine1,
+          addressLine2: addressLine2 || undefined, // Optional field
+          city: city,
+          state: state,
+          postalCode: postalCode,
         };
 
         // Debug: Log the payload (remove in production if needed)
