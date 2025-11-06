@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="/lockd.ico" />
   <title>Complete Your Setup - Lockd</title>
   <script src="https://js.stripe.com/v3/"></script>
   <style>
@@ -806,27 +807,30 @@
           return;
         }
 
-        // Validate name and email are provided
-        if (!name || name.trim() === '') {
+        // Prepare request payload matching database expected format
+        const trimmedName = name.trim();
+        const trimmedEmail = email.trim();
+        
+        // Validate name and email are not empty after trimming
+        if (!trimmedName || trimmedName === '') {
           document.getElementById('card-errors').textContent = 'Please enter your full name.';
           submitButton.disabled = false;
           submitButton.textContent = 'Complete Setup';
           return;
         }
 
-        if (!email || !email.includes('@')) {
+        if (!trimmedEmail || trimmedEmail === '' || !trimmedEmail.includes('@')) {
           document.getElementById('card-errors').textContent = 'Please enter a valid email address.';
           submitButton.disabled = false;
           submitButton.textContent = 'Complete Setup';
           return;
         }
 
-        // Prepare request payload matching database expected format
         const requestPayload = {
           token: token,
           debitCardToken: cardToken.id,
-          email: email.trim(),
-          fullName: name.trim(),
+          email: trimmedEmail,
+          fullName: trimmedName,
           phone: formattedPhone,
           ssnLast4: ssnLast4,
           dobDay: dobDayNum,
