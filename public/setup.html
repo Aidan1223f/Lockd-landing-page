@@ -551,18 +551,31 @@
       const cursorPosition = input.selectionStart;
       const oldValue = input.value;
       
-      // Extract only digits
-      let digits = input.value.replace(/\D/g, '');
+      // Extract digits, but handle the case where "+1 (" is already in the value
+      // We need to extract only the phone number digits (not the "1" from "+1")
+      let rawValue = input.value;
       
-      // Remove leading 1 if present (US country code)
-      if (digits.startsWith('1') && digits.length === 11) {
-        digits = digits.slice(1);
+      // If the value starts with "+1 (", extract only digits after that
+      // Otherwise, extract all digits and remove leading 1 if it's a country code
+      let digits = '';
+      if (rawValue.startsWith('+1 (')) {
+        // Extract only digits that come after "+1 ("
+        digits = rawValue.replace(/\D/g, '').slice(1); // Remove the "1" from "+1"
+      } else {
+        // Extract all digits
+        let allDigits = rawValue.replace(/\D/g, '');
+        // Remove leading 1 only if we have 11 digits (country code + 10 digit number)
+        if (allDigits.length === 11 && allDigits.startsWith('1')) {
+          digits = allDigits.slice(1);
+        } else {
+          digits = allDigits;
+        }
       }
       
-      // Limit to 10 digits
+      // Limit to 10 digits (the actual phone number)
       digits = digits.slice(0, 10);
       
-      // Format the phone number
+      // Format the phone number with +1 prefix
       let formatted = '';
       if (digits.length === 0) {
         formatted = '';
@@ -574,25 +587,44 @@
         formatted = `+1 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
       }
       
-      // Set the formatted value
-      input.value = formatted;
-      
-      // Calculate new cursor position
-      // Count digits before cursor in old value
-      const digitsBeforeCursor = oldValue.slice(0, cursorPosition).replace(/\D/g, '').length;
-      
-      // Find position in new formatted string
-      let newPosition = 0;
-      let digitCount = 0;
-      for (let i = 0; i < formatted.length && digitCount < digitsBeforeCursor; i++) {
-        if (/\d/.test(formatted[i])) {
-          digitCount++;
+      // Only update if the value actually changed
+      if (input.value !== formatted) {
+        input.value = formatted;
+        
+        // Calculate new cursor position
+        // Count phone digits (excluding the "1" from "+1") before cursor in old value
+        let phoneDigitsBeforeCursor = oldValue.slice(0, cursorPosition);
+        if (phoneDigitsBeforeCursor.startsWith('+1 (')) {
+          // Count digits after "+1 ("
+          phoneDigitsBeforeCursor = phoneDigitsBeforeCursor.replace(/^\+1\s*\(/, '').replace(/\D/g, '');
+        } else {
+          // Extract digits and remove leading 1 if it's country code
+          let allDigits = phoneDigitsBeforeCursor.replace(/\D/g, '');
+          if (allDigits.length === 11 && allDigits.startsWith('1')) {
+            phoneDigitsBeforeCursor = allDigits.slice(1);
+          } else {
+            phoneDigitsBeforeCursor = allDigits;
+          }
         }
-        newPosition = i + 1;
+        const digitCount = Math.min(phoneDigitsBeforeCursor.length, 10);
+        
+        // Find position in new formatted string (skip the "1" in "+1")
+        let newPosition = formatted.length;
+        let countedDigits = 0;
+        // Start counting after "+1 ("
+        for (let i = 4; i < formatted.length; i++) {
+          if (/\d/.test(formatted[i])) {
+            countedDigits++;
+            if (countedDigits > digitCount) {
+              newPosition = i;
+              break;
+            }
+          }
+        }
+        
+        // Set cursor position
+        input.setSelectionRange(newPosition, newPosition);
       }
-      
-      // Set cursor position
-      input.setSelectionRange(newPosition, newPosition);
     }
 
     // SSN validation - only allow digits
