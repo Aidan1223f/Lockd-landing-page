@@ -386,20 +386,25 @@
         </div>
 
         <!-- SMS Notification Consent -->
-        <div style="background: #f9fafb; border: 1px solid #e5e7eb; padding: 16px; border-radius: 8px; margin: 20px 0;">
-          <label style="display: flex; align-items: flex-start; cursor: pointer; font-size: 14px; color: #333;">
+        <div style="background: #f9fafb; border: 1px solid #e5e7eb; padding: 12px; border-radius: 8px; margin: 20px 0;">
+          <label style="display: flex; align-items: flex-start; cursor: pointer; font-size: 13px; color: #333;">
             <input 
               type="checkbox" 
               id="sms-consent" 
               name="sms-consent"
               required 
-              style="margin-right: 10px; margin-top: 3px; width: 16px; height: 16px; min-width: 16px; min-height: 16px; cursor: pointer; flex-shrink: 0; accent-color: #6b7280;"
+              style="margin-right: 8px; margin-top: 2px; width: 16px; height: 16px; min-width: 16px; min-height: 16px; cursor: pointer; flex-shrink: 0; accent-color: #6b7280;"
             >
-            <span>
-              <strong style="color: #333;">SMS Notification Consent *</strong>
-              <p style="margin: 8px 0 0 0; color: #666; font-size: 13px; line-height: 1.5;">
+            <span style="flex: 1;">
+              <strong style="color: #333; font-size: 13px;">SMS Notification Consent *</strong>
+              <div id="sms-consent-short" style="margin: 4px 0 0 0; color: #666; font-size: 11px; line-height: 1.4;">
+                I consent to receive SMS notifications from Lockd for money transfers and account updates. 
+                <a href="#" id="sms-read-more-link" style="color: #7634D7; text-decoration: underline; cursor: pointer;" onclick="event.preventDefault(); document.getElementById('sms-consent-short').style.display='none'; document.getElementById('sms-consent-full').style.display='block'; return false;">Read more</a>
+              </div>
+              <div id="sms-consent-full" style="display: none; margin: 4px 0 0 0; color: #666; font-size: 11px; line-height: 1.4;">
                 I consent to receive SMS text messages from Lockd at the phone number provided above for notifications about money transfers, payment receipts, and account updates. Message and data rates may apply. You can opt out at any time by replying STOP. Message frequency varies.
-              </p>
+                <a href="#" style="color: #7634D7; text-decoration: underline; cursor: pointer;" onclick="event.preventDefault(); document.getElementById('sms-consent-full').style.display='none'; document.getElementById('sms-consent-short').style.display='block'; return false;">Show less</a>
+              </div>
             </span>
           </label>
         </div>
