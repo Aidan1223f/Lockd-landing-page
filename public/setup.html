@@ -239,6 +239,11 @@
 
     <!-- Form State -->
     <div id="form-state" style="display: none;">
+      <div id="demo-banner" style="display: none; background: #dbeafe; border-left: 4px solid #3b82f6; padding: 12px; border-radius: 4px; margin-bottom: 20px; font-size: 13px;">
+        <strong style="color: #1e40af;">🧪 DEMO MODE:</strong>
+        <span style="color: #1e3a8a;"> This is a test form for demonstration purposes. Form submission is disabled.</span>
+      </div>
+      
       <h1>You've Been Invited!</h1>
       <p class="subtitle">Complete your setup to start receiving instant payments to your debit card</p>
 
@@ -463,8 +468,8 @@
     const STRIPE_PUBLISHABLE_KEY = 'pk_test_51SMe4jC89gv3wtwgJXJ2wzEz12zF3A7X62SOPns1c1AAvMf2Y1EJQufjMhGqif8Dw7SwaLJQSIV0sODlzbGhnZnj00um9lsG8M';
 
     // Development/Test Mode - Set to true to use test token
-    const USE_TEST_TOKEN = false; // Change to true for testing
-    const TEST_TOKEN = 'test-token-123'; // Replace with your actual test token from database
+    const USE_TEST_TOKEN = true; // Enabled for testing/demo purposes
+    const TEST_TOKEN = 'twilio-demo'; // Test token that always works for showing the form
 
     // Get token from URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -485,11 +490,14 @@
       }
     }
 
-    // Use test token if enabled and no token found
+    // Use test token if enabled and no token found, or if token matches test token
     if ((!token || token.trim() === '') && USE_TEST_TOKEN) {
       token = TEST_TOKEN;
       console.log('Using test token for development:', token);
     }
+    
+    // Check if this is a test token that should bypass API validation
+    const IS_TEST_TOKEN = token === TEST_TOKEN || token === 'test' || token === 'twilio-demo';
 
     // Initialize Stripe with publishable key
     const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
@@ -690,6 +698,20 @@
 
     // Load invite data
     async function loadInvite() {
+      // If this is a test token, bypass API and show form directly
+      if (IS_TEST_TOKEN) {
+        console.log('Using test token - bypassing API validation');
+        const mockData = {
+          recipientName: 'Demo User',
+          email: '',
+          phone: '',
+          success: true
+        };
+        inviteData = mockData;
+        showForm(mockData);
+        return;
+      }
+
       try {
         const response = await fetch(`${SUPABASE_URL}/functions/v1/get-recipient-invite`, {
           method: 'POST',
@@ -722,6 +744,11 @@
     function showForm(data) {
       document.getElementById('loading').style.display = 'none';
       document.getElementById('form-state').style.display = 'block';
+      
+      // Show demo banner if using test token
+      if (IS_TEST_TOKEN) {
+        document.getElementById('demo-banner').style.display = 'block';
+      }
       
       // Set recipient name in the info box (use placeholder if not available)
       const displayName = data.recipientName || 'there';
@@ -806,6 +833,12 @@
     // Handle form submission
     document.getElementById('payment-form').addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      // Prevent submission for test tokens
+      if (IS_TEST_TOKEN) {
+        document.getElementById('card-errors').textContent = 'Demo mode: Form submission is disabled. This is a test form for demonstration purposes.';
+        return;
+      }
 
       const submitButton = document.getElementById('submit-button');
       submitButton.disabled = true;
