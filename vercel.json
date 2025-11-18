@@ -1,4 +1,10 @@
 {
+  "rewrites": [
+    {
+      "source": "/((?!api/|setup.html|verify.html|lockd.ico|robots.txt|.*\\.(ico|svg|png|jpg|jpeg|gif|webp|css|js|json|xml|txt)).*)",
+      "destination": "/index.html"
+    }
+  ],
   "redirects": [
     {
       "source": "/poster-ghosted",
