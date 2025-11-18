@@ -239,11 +239,6 @@
 
     <!-- Form State -->
     <div id="form-state" style="display: none;">
-      <div id="demo-banner" style="display: none; background: #dbeafe; border-left: 4px solid #3b82f6; padding: 12px; border-radius: 4px; margin-bottom: 20px; font-size: 13px;">
-        <strong style="color: #1e40af;">🧪 DEMO MODE:</strong>
-        <span style="color: #1e3a8a;"> This is a test form for demonstration purposes. Form submission is disabled.</span>
-      </div>
-      
       <h1>You've Been Invited!</h1>
       <p class="subtitle">Complete your setup to start receiving instant payments to your debit card</p>
 
@@ -744,11 +739,6 @@
     function showForm(data) {
       document.getElementById('loading').style.display = 'none';
       document.getElementById('form-state').style.display = 'block';
-      
-      // Show demo banner if using test token
-      if (IS_TEST_TOKEN) {
-        document.getElementById('demo-banner').style.display = 'block';
-      }
       
       // Set recipient name in the info box (use placeholder if not available)
       const displayName = data.recipientName || 'there';
